@@ -21,3 +21,5 @@ backend//coverage
 backend/.nyc_output
 
 !.gitkeep
+
+backend/env/local.env

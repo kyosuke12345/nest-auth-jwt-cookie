@@ -4,12 +4,15 @@ import {
   Get,
   HttpCode,
   Post,
+  Redirect,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiCookieAuth, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import User from 'src/database/entities/user.entity';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './class/authentication.dto';
 import RequestWithUser from './class/authentication.interface';
@@ -70,4 +73,32 @@ export class AuthenticationController {
   async authenticate(@Req() request: RequestWithUser) {
     return request.user;
   }
+
+  @ApiOperation({
+    description: 'googleのログイン処理',
+  })
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req: Request) {
+    console.log('aaa')
+  }
+
+  @Get('google/redirect')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: Request, @Res({passthrough: true}) res: Response) {
+    // この時点でreq.userに上のほうで定義したvalidateで抜き出した認証情報が入っている(名前、メールアドレス、画像など)
+    // 具体的な処理はserviceにやらせる
+    const user = req?.user as any;
+    console.log(user)
+    const d = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.accessToken}`);
+    const data = await d.json();
+    // ここで登録処理、登録されている場合は、
+    console.log(data);
+    const token = await this.authenticatoinService.login(req?.user as User);
+    const secretData = {
+      token
+    }
+    res.cookie('auth-cookie', secretData, { httpOnly: true });
+    res.redirect('/swagger');
+  }  
 }

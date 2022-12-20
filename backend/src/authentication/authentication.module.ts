@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from 'src/users/users.module';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
+import { GoogleStrategy } from './google.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalSerializer } from './local.serializer';
 import { LocalStrategy } from './local.strategy';
@@ -24,6 +25,7 @@ import { LocalStrategy } from './local.strategy';
     LocalStrategy,
     LocalSerializer,
     JwtStrategy,
+    GoogleStrategy,
   ],
   controllers: [AuthenticationController],
 })
