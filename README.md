@@ -15,3 +15,8 @@ $ npm run start:dev
 # Nest アクセス
 
 http:localhost:3000/swagger
+
+# refreshtoken などの実装は下記を参考
+
+https://www.learmoreseekmore.com/2021/05/nestjs-jwt-auth-cookie-series-part3-refresh-token.html
+https://github.com/Naveen512/nestjs-jwt-cookie-auth

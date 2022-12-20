@@ -38,8 +38,6 @@ export class AuthenticationService {
 
   public async login(user: User) {
     const payload = { email: user.email, username: user.name };
-    return {
-      accsess_token: this.jwtService.sign(payload)
-    }
+    return this.jwtService.sign(payload);
   }
 }

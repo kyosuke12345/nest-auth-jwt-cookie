@@ -5,9 +5,11 @@ import {
   HttpCode,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCookieAuth, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './class/authentication.dto';
 import RequestWithUser from './class/authentication.interface';
@@ -52,11 +54,16 @@ export class AuthenticationController {
   @HttpCode(200)
   @UseGuards(LoginWithCredentialsGuard)
   @Post('login')
-  async login(@Req() request: RequestWithUser) {
-    return this.authenticatoinService.login(request.user);
+  async login(@Req() request: RequestWithUser, @Res({passthrough: true}) res: Response) {
+    const token = await this.authenticatoinService.login(request.user);
+    const secretData = {
+      token
+    }
+    res.cookie('auth-cookie', secretData, { httpOnly: true });
+    return {statusCode: 200};
   }
 
-  @ApiBearerAuth()
+  @ApiCookieAuth('auth-cookie')
   @ApiOperation({ description: 'ユーザ情報取得' })
   @UseGuards(JwtAuthGuard)
   @Get()
