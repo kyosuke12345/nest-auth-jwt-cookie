@@ -90,10 +90,6 @@ export class AuthenticationController {
     // 具体的な処理はserviceにやらせる
     const user = req?.user as any;
     console.log(user)
-    const d = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.accessToken}`);
-    const data = await d.json();
-    // ここで登録処理、登録されている場合は、
-    console.log(data);
     const token = await this.authenticatoinService.login(req?.user as User);
     const secretData = {
       token

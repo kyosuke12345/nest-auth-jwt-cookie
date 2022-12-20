@@ -22,6 +22,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ): Promise<any> {
     console.log('aa')
     const { name, emails, photos } = profile;
+    console.log(profile)
+    // ここでDB確認 or 登録
 
     const user = {
       email: emails[0].value,
